@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+ <div class="container">
+    <img class="one_post avatar" src="{{ url_for('static', filename='images/'~post.image_filename) }}" alt="">
+    <p>{{post.text}}</p>
+    {% for comm in post.comments %}
+    <div class="media">
+        <img class="mr-3 avatar mini" src="{{ url_for('static', filename='images/user.png') }}" alt="Generic placeholder image">
+        <div class="media-body">
+
+          <h5 class="mt-0 ">{{comm.author}}</h5>
+        {{comm.text}}
+        </div>
+    </div>
+    {% if comm.replies %}
+      {% for repl in comm.replies%}
+      <div class=" reply media">
+        <img class="mr-3 avatar micro" src="{{ url_for('static', filename='images/user.png') }}" alt="Generic placeholder image">
+        <div class="media-body">
+
+          <h5 class="mt-0 ">{{repl.author}}</h5>
+        {{repl.text}}
+        </div>
+      </div>
+      {% endfor %}
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
