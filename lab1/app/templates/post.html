@@ -2,12 +2,23 @@
 
 {% block content %}
  <div class="container">
+   <h1>{{post.title}}</h1>
+   <p> {{post.author}} {{post.date}}</p>
     <img class="one_post avatar" src="{{ url_for('static', filename='images/'~post.image_filename) }}" alt="">
     <p>{{post.text}}</p>
+    <form class='border border-secondary p-2 rounded'>
+      <div class="form-row b">
+        <div class="col-md-12 mb-3">
+          <label for="validationDefault01">Оставьте комментарий</label>
+          <textarea class="form-control" id="validationTextarea" ></textarea>
+        </div>
+      </div>
+      <button class="btn btn-primary" type="submit">Отправить</button>
+    </form>
     {% for comm in post.comments %}
     <div class="media">
-        <img class="mr-3 avatar mini" src="{{ url_for('static', filename='images/user.png') }}" alt="Generic placeholder image">
-        <div class="media-body">
+        <img class="mr-3 mini" src="{{ url_for('static', filename='images/user.png') }}" alt="Generic placeholder image">
+        <div class="media-body my-4">
 
           <h5 class="mt-0 ">{{comm.author}}</h5>
         {{comm.text}}
@@ -16,8 +27,8 @@
     {% if comm.replies %}
       {% for repl in comm.replies%}
       <div class=" reply media">
-        <img class="mr-3 avatar micro" src="{{ url_for('static', filename='images/user.png') }}" alt="Generic placeholder image">
-        <div class="media-body">
+        <img class="mr-3 micro" src="{{ url_for('static', filename='images/user.png') }}" alt="Generic placeholder image">
+        <div class="media-body my-3">
 
           <h5 class="mt-0 ">{{repl.author}}</h5>
         {{repl.text}}
@@ -27,4 +38,5 @@
     {% endif %}
     {% endfor %}
 </div>
+
 {% endblock %}

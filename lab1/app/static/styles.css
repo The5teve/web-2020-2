@@ -8,9 +8,9 @@ body {
     max-width: 100%;
 }
 .mini {
-    max-width: 20%;
+    max-width: 10%;
 }
 .micro {
-    max-width: 15%;
+    max-width: 5%;
     margin-left: 10%;
 }
