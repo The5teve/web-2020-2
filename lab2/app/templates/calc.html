@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1 class="my-5"> Калькулятор </h1>
-<form method="PSOT" class="form-inline">
+<form  class="form-inline">
     <input type="text" name="operand1" class="form-control" value="{{ request.args.get('operand1', '') }}"> 
     <select name="operation" id="operation" class="form-control">
 
@@ -16,7 +16,7 @@
     <button type="submit"class="btn btn-secondary">=</button>
 
     {% if result %}
-        <input type="text" name="reslt" class="form-control" value="{{ result }}" disabled>
+        <input type="text" name="result" class="form-control" value="{{ result }}" disabled>
     {% endif %}
 </form>
 {% if error_msg %}
