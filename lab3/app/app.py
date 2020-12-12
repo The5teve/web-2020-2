@@ -51,7 +51,7 @@ def login():
     if request.method == 'POST':
         login = request.form.get('login')
         password = request.form.get('password')
-        remember_me = request.form.get('remember-me') == 'on'
+        remember_me = request.form.get('remember-me')
         if login and password:
             for user in get_users():
                 if user['login'] == login and user['password'] == password:

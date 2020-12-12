@@ -27,7 +27,6 @@ def cookies():
         resp.set_cookie('username', 'artem', expires=0)
     else:
         resp.set_cookie('username', 'artem')
-
     return resp
 
 @app.route('/form', methods=['GET', 'POST'])
@@ -61,7 +60,7 @@ def phonecheck():
     msg=[]
     if request.method == 'POST':
         result = request.form['phone']
-        result = result.replace(')','').replace('.','').replace('(','').replace(' ','').replace('-','').replace('.','').replace('+','')
+        result = result.replace(')','').replace('.','').replace('(','').replace(' ','').replace('-','').replace('+','')
         digits=True
         for x in list(result):
             if not x.isdigit():
@@ -75,10 +74,9 @@ def phonecheck():
             numbers=True
         else:
             numbers=False
-            msg.append('Недопустимый ввод. Неверное количество цифр.')
-        
+            msg.append('Недопустимый ввод. Неверное количество цифр.')      
     else:
         result = None
-    if digits and numbers:
+    if digits and numbers and result:
        result = f"{result[0]}-{result[1:4]}-{result[4:7]}-{result[7:9]}-{result[9:11]}"
     return render_template('phonecheck.html', result=result, numbers=numbers,digits=digits,msg=msg)
