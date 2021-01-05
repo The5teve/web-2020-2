@@ -38,6 +38,7 @@
 
         </div>
     </div>
+    {% if user.role_id == 2 %}
     <div class="form-group row">
         <label for="role_id" class="col-form-label col-md-2"> Роль</label>
         <div class="col-md-6">
@@ -49,6 +50,7 @@
             </select>
         </div>
     </div>
+    {% endif %}
     <div class="form-group row">
         <input type="submit" class="btn btn-secondary" value="Сохранить">
     </div>

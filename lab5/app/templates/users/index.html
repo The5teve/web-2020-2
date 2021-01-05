@@ -21,12 +21,19 @@
             <td>{{ user.role_name  or 'Не назначено'}}</td>
             <td>
                 <div class="btn-group">
+
+                  {% if current_user.is_authenticated %}
+                    {% if current_user.can('show', record=user)%}
                     <a class="btn btn-primary" href="{{ url_for('show', user_id=user.id )}}"> Просмотр </a>
-                    {% if current_user.is_authenticated %}
+                    {% endif %}
+                    {% if current_user.can('edit', record=user) %}
                     <a class="btn btn-secondary" href="{{ url_for('edit', user_id=user.id )}}"> Редактировать </a>
+                    {% endif %}
+                    {% if current_user.can('delete', record=user) %}
                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-user-modal" data-url="{{ url_for('delete', user_id=user.id) }}">
                         Удалить
-                    </button>                   
+                    </button>       
+                    {% endif %}            
                     {% endif %}
                 </div>
             </td>
@@ -34,7 +41,7 @@
         {% endfor %}
     </tbody>
 </table>
-{% if current_user.is_authenticated %}
+{% if current_user.is_authenticated and current_user.can('new') %}
  <a  class="btn btn-secondary"href="{{ url_for('new') }}"> Создать пользователя</a>
 {% endif %}
 <div class="modal" tabindex="-1" role="dialog" id="delete-user-modal">

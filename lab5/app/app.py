@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash
-from flask_login import login_required, current_user
+from flask_login import  current_user,login_required
 from mysql_db import MySQL
 import mysql.connector as connector
-
 
 app = Flask(__name__)
 application = app
@@ -11,10 +10,24 @@ app.config.from_pyfile('config.py')
 
 mysql = MySQL(app)
 
-from auth import bp as auth_bp, init_login_manager
-
+from auth import bp as auth_bp, init_login_manager, check_rights
+from visits import bp as visits_bp
 init_login_manager(app)
 app.register_blueprint(auth_bp)
+app.register_blueprint(visits_bp)
+
+
+
+@app.before_request
+def save_visit_info():
+    user_id = getattr(current_user, 'id', None)
+    query='INSERT INTO visit_logs (path, user_id) VALUES (%s, %s);'
+    with mysql.connection.cursor(named_tuple=True) as cursor:
+        try:
+            cursor.execute(query, (request.path, user_id))
+            mysql.connection.commit()
+        except:
+            pass
 
 def load_roles():
     cursor =  mysql.connection.cursor(named_tuple=True)
@@ -27,7 +40,6 @@ def load_roles():
 def index():
     return render_template('index.html')
 
-
 @app.route('/users')
 def users():
     cursor =  mysql.connection.cursor(named_tuple=True)
@@ -37,11 +49,13 @@ def users():
     return render_template('users/index.html', users=users)
 
 @app.route('/users/new')
+@check_rights('new')
 @login_required
 def new():
     return render_template('users/new.html', user={}, roles=load_roles())
 
 @app.route('/users/<int:user_id>')
+@check_rights('show')
 @login_required
 def show(user_id):
     cursor =  mysql.connection.cursor(named_tuple=True)
@@ -53,6 +67,7 @@ def show(user_id):
     return render_template('users/show.html', user=user, role=role)
 
 @app.route('/users/<int:user_id>/edit')
+@check_rights('edit')
 @login_required
 def edit(user_id):
     cursor =  mysql.connection.cursor(named_tuple=True)
@@ -62,6 +77,7 @@ def edit(user_id):
     return render_template('users/edit.html', user=user, roles=load_roles())
 
 @app.route('/users/create', methods=['POST'])
+@check_rights('new')
 @login_required
 def create():
     login = request.form.get('login') or None
@@ -97,6 +113,7 @@ def create():
     return redirect(url_for('users'))
 
 @app.route('/users/<int:user_id>/update', methods=['POST'])
+@check_rights('edit')
 @login_required
 def update(user_id):
     login = request.form.get('login') or None
@@ -128,6 +145,7 @@ def update(user_id):
     return redirect(url_for('users'))
 
 @app.route('/users/<int:user_id>/delete', methods=['POST'])
+@check_rights('delete')
 @login_required
 def delete(user_id):
     with mysql.connection.cursor(named_tuple=True) as cursor:
