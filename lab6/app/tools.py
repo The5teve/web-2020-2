@@ -58,24 +58,7 @@ class CoursesFilter:
         if self.category_ids:
             self.query = self.query.filter(Course.category_id.in_(self.category_ids))
 
-class ReviewsFilter:
-    def __init__(self, sort):
-        self.sort = sort
-        self.query = Review.query
 
-    def perform(self):
-        self.__filter()
-        return self.query.order_by(Review.created_at.desc())
-
-    def __filter(self):
-        if self.sort:
-            if self.sort=='created_at':
-                self.query = self.query.order_by(Review.created_at.desc())
-            elif self.sort=='rating_asc':
-                self.query = self.query.order_by(Review.rating.asc())
-            elif self.sort=='rating_desc':
-                self.query = self.query.order_by(Review.rating.desc())
- 
 class Navigator:
     def __init__(self, course, theme=None, current_step=None):
         self.course = course

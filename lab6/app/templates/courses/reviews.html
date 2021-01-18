@@ -20,8 +20,9 @@
 
     <form class="mb-5 mt-3 row align-items-center">      
         <div class="col-md-10 my-3">
+            <input hidden value="{{course.id}}" name="course_id" >
             <select class="form-control selectpicker" data-live-search="true" id="sort" name="sort" title="Выбрать фильтр">
-                <option value="created_at" {% if 'created_at' in request.args.getlist('sort') %}selected{% endif %}>По новизне</option>
+                <option value="created_at" {% if 'created_at' in request.args.getlist('sort') %} selected {% elif not request.args.getlist('sort') %} selected{% endif %}>По новизне</option>
                 <option value="rating_asc" {% if 'rating_asc' in request.args.getlist('sort') %}selected{% endif %}>Сначала отрицательные</option>
                 <option value="rating_desc" {% if 'rating_desc' in request.args.getlist('sort') %}selected{% endif %}>Сначала положительные</option>
             </select>

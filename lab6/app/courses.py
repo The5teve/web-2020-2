@@ -2,7 +2,7 @@ import os
 import bleach
 from flask import Blueprint, render_template, redirect, url_for, request, current_app, flash
 from flask_login import login_required, current_user
-from tools import Navigator, ImageSaver, CoursesFilter, ReviewsFilter
+from tools import Navigator, ImageSaver, CoursesFilter
 from models import Course, Category, Image, Theme, User, Step, Page, Review
 
 from app import db
@@ -177,6 +177,7 @@ def show_content(course_id, theme_id=None):
 def reviews(course_id):
     course = Course.query.get(course_id)
     reviews = Review.query.filter(Review.course_id == course_id)
+    print(reviews)
     if request.method == "POST":
         review = Review(**params1())
         db.session.add(review)
@@ -193,12 +194,21 @@ def reviews(course_id):
             if rev.user_id == current_user.id:
                 own_review = rev
     page = request.args.get('page', 1, type=int)
-    reviews_filter = ReviewsFilter(**search_params1())
-    reviews = reviews_filter.perform()
+    
+    sort = request.args.get('sort', 'created_at')
+    if sort == 'created_at':
+        reviews =reviews.order_by(Review.created_at.desc())
+    elif sort == 'rating_asc':
+        reviews = reviews.order_by(Review.rating.asc())
+    elif sort == 'rating_desc':
+        reviews = reviews.order_by(Review.rating.desc())
+    else:
+        reviews = reviews.order_by(Review.created_at.desc())
     pagination = reviews.paginate(page, PER_PAGE)
     reviews = pagination.items
-    params = search_params1()
+    params = dict()
     params['course_id']=course_id
+    params['sort']=sort
     return render_template(
         '/courses/reviews.html', 
         course=course, 
