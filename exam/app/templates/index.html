@@ -1,65 +1,41 @@
 {% extends 'base.html' %}
-
+{% from 'pagination.html' import render_pagination %}
 {% block content %}
-<div class="title-area text-center d-flex p-3">
-    <div class="m-auto">
 
-        <h1 class="title mb-5 font-weight-bold">Образовательный портал</h1>
-        
-        <div class="container">
-            <p class="description w-75 mb-5 px-3 mx-auto">
-                Мы создаем и продвигаем технологии онлайн-образования как эффективный 
-                образовательный инструмент, который будет способствовать повышению 
-                доступности и качества образования.
-            </p>
-
-            <div class="filter my-5 p-3 bg-dark rounded">
-                <form action="" class="row align-items-center">
-                    <div class="col-sm-12 mb-3 col-md-6 mb-md-0">
-                        <input type="text" class="form-control" id="course-name" name="name" placeholder="Название курса">
-                    </div>
-                    
-                    <div class="col-sm-12 mb-3 col-md-4 mb-md-0">
-                        <select class="form-control selectpicker" id="course-category" name="category_ids" title="Категория курса" multiple>
-                            {% for category in categories %}
-                                <option value="{{ category.id }}">{{ category.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    
-                    
-                    <div class="col-sm-12 col-md-2 align-self-end">
-                        <button type="submit" class="btn btn-primary w-100 mt-auto">Найти</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="container-fluid">
     <div class="top-courses container-fluid my-5">
 
-        <h2 class="mb-3 text-center text-uppercase font-weight-bold">Популярные курсы</h2>
+        <h2 class="mb-3 text-center text-uppercase font-weight-bold">Фильмы</h2>
 
         <div class="row no-gutters">
-            {% for course in courses %}
+            {% for movie in movies %}
                 <div class="col-lg-4 col-md-6">
-                    <div class="course" style="background-image: url({{ url_for('image', image_id=course.background_image_id) }});">
+                    <div class="row">
+                    <div class="course text-center" style="background-image: url({{ url_for('image', poster_id=movie.poster_id) }});">
                         <a class="title" href="">
-                            {{ course.name }}
+                            {{ movie.name }}
                         </a>
-                        <p>{{ course.author.full_name }}</p>
+                        <p>{{ movie.movie_genres.id }}</p>
                         <div class="rating">
-                            <span>★</span> <span>{{ "%.2f" | format(course.rating) }}</span>
+                            <span></span> <span>{{ movie.production_year }}</span>
                         </div>                                
+                    </div>
+                    </div>
+                    <div class="row  p-1">
+                        <div class="container text-center">
+                    <a class="btn btn-sm btn-outline-dark mx-1" href="{{ url_for('movies.show', movie_id=movie.id) }}">Просмотр</a>
+                    <a class="btn btn-sm btn-outline-primary mx-1" href="{{ url_for('movies.edit', movie_id=movie.id) }}">Редактировать</a>
+                    <a class="btn btn-sm btn-outline-danger  mx-1" href="{{ url_for('movies.delete', movie_id=movie.id) }}">Удалить</a>
+                        </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
         <div class="my-3 text-center">
-            <a href="" class="btn btn-lg btn-outline-dark catalog-btn">Каталог курсов</a>
+            <a href="{{ url_for('movies.new') }}" class="btn btn-lg btn-outline-dark catalog-btn">Добавить фильм</a>
         </div>
     </div>
 </div>
+{{ render_pagination(pagination, request.endpoint) }}
 {% endblock %}

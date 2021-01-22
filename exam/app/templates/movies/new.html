@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% from 'movies/form.html' import render_form %}
+
+<div class="mb-5">
+    {{ render_form(url_for('movies.create'),genres) }}
+</div>
+{% endblock %}

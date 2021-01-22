@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% from 'movies/form.html' import render_form%}
+{% block content %}
+
+{{ render_form(url_for('movies.update', movie_id = movie.id ), genres, movie=movie, movie_genres=movie_genres) }}
+ 
+{% endblock %}

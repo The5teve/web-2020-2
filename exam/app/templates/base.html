@@ -15,7 +15,9 @@
     <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
-    <title>Образовательный портал | Московский Политех</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/ico.ico') }}" type="image/x-icon">
+
+    <title>fckrnd VHS</title>
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -24,14 +26,14 @@
             <div class="container">
                 <div class="logo navbar-brand">
                     <a href="{{ url_for('index') }}">
-                        <img class="img-fluid" src="{{ url_for('static', filename='images/polytech_logo.png') }}" alt="polytech-logo">
+                        <img class="img-fluid" src="{{ url_for('static', filename='images/logo-logo.png') }}" style='height: 30%; width: 60%;' alt="polytech-logo">
                     </a>
                 </div>
                 {% if current_user.is_authenticated %}
                     <div class="dropdown">
                         <div class="profile" title="{{ current_user.full_name }}" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img class="img-fluid rounded-circle cursor-pointer"
-                                src="{{ url_for('static', filename='images/default-profile-picture-300x300.jpeg') }}" alt="profile-pic">
+                                src="{{ url_for('static', filename='images/default-profile-picture.png') }}" alt="profile-pic">
                         </div>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" href="#">Профиль</a>
@@ -68,7 +70,7 @@
     <footer class="footer bg-dark text-white d-flex align-items-center mt-auto py-5">
         <div class="container">
             <div class="text-center">
-                &copy; Московский политехнический университет
+               Фаградян А.С. 191-351 &copy; All rights reserved 
             </div>
         </div>
     </footer>
@@ -88,6 +90,7 @@
     <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
 
     <script defer src="{{ url_for('static', filename='main.js') }}"></script>
+
 </body>
 
 </html>
