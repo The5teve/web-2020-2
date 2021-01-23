@@ -37,4 +37,3 @@ class ImageSaver:
         self.md5_hash = hashlib.md5(self.file.read()).hexdigest()
         self.file.seek(0)
         return Poster.query.filter(Poster.md5_hash == self.md5_hash).first()
-
