@@ -5,7 +5,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import markdown
 from app import db
-
+from users_policy import UsersPolicy, USER_ROLE_ID
 class User(db.Model, UserMixin):
     __tablename__ = 'users5'
 
@@ -31,6 +31,14 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    def can(self, action):
+        policy =  UsersPolicy()
+        method = getattr(policy, action, None)
+        if method:
+            return method()
+        return False
+    def is_user(self):
+        return self.role_id == USER_ROLE_ID
 
 class Role(db.Model):
     __tablename__ = 'roles5'
@@ -86,6 +94,7 @@ class Movie(db.Model):
     poster = db.relationship('Poster', cascade="all, delete")
     movie_genres = db.relationship('Movie_Genre', cascade="all, delete")
     review = db.relationship('Review', cascade="all, delete")
+    movie_collection = db.relationship('Movie_Collection', cascade="all, delete")
     @property
     def html(self):
         return markdown.markdown(self.description)
@@ -116,3 +125,17 @@ class Movie_Genre(db.Model):
     
     genre = db.relationship('Genre')
     movie = db.relationship('Movie')
+
+class Collection(db.Model):
+    __tablename__ = 'collections'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users5.id'))
+    movie_collection = db.relationship('Movie_Collection')
+
+class Movie_Collection(db.Model):
+    __tablename__ = 'movie_collections'
+    collection_id = db.Column(db.Integer, db.ForeignKey('collections.id'), primary_key=True)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), primary_key=True)
+    movie = db.relationship('Movie')
+    collection = db.relationship('Collection')

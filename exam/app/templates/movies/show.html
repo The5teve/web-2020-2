@@ -11,13 +11,16 @@
             <p class="description w-75 mb-5 mx-auto">
                 {{ movie.director }}
             </p>
+            {% if current_user.is_user() %}
+            <a data-toggle="modal" data-target="#to-collection" class="btn btn-dark btn-md" > Добавить в подборку</a>
+            {% endif %}
         </div>
 
     </div>
 </div>
 
 <div class="container mt-5">
-    <section class="about mb-4">
+    <section class="about mb-4 ">
         <h2 class="mb-3 text-center text-uppercase font-weight-bold">О фильме</h2>
         <p>{{ movie.html | safe }}</p>
     </section>
@@ -48,25 +51,25 @@
     {% if own_rev %}
     <div class="one-review border border-info text-center rounded p-2 my-4">
         <div class="row">
-                                        <div class="col">
-                                            <h3>{{own_rev.user.full_name}}</h3>
-                                        </div>
+            <div class="col">
+                <h3>{{own_rev.user.full_name}}</h3>
+            </div>
 
-                                    </div>
+        </div>
 
         <div class="row pt-2">
-                                        <div class="col-md-12">
-                                            <h4>{% for  i in range(0, own_rev.score)%} &#9733; {% endfor %} {% for  i in range(0, 5-own_rev.score)%} &#9734; {% endfor %}</h4>
-                                            <p>{{ own_rev.html | safe }}</p>
-                                        </div>
-                                    </div>
+            <div class="col-md-12">
+                <h4>{% for  i in range(0, own_rev.score)%} &#9733; {% endfor %} {% for  i in range(0, 5-own_rev.score)%} &#9734; {% endfor %}</h4>
+                <p>{{ own_rev.html | safe }}</p>
+            </div>
+        </div>
 
        </div>
     {% else %}
-        <a href="{{url_for('movies.review', movie_id=movie.id)}}" class="btn btn-dark btn-lg mb-4">Оставить рецензию</a>
+        <a href="{{url_for('movies.review', movie_id=movie.id)}}" class="btn btn-dark btn-lg mb-4">Написать рецензию</a>
     {% endif %}
 {% else %}
-<button class="btn btn-dark btn-lg mb-4" disabled>Оставить рецензию</button>
+<button class="btn btn-dark btn-lg mb-4" disabled>Написать рецензию</button>
 {% endif %}
 </div>
 <div class="container">
@@ -74,18 +77,18 @@
     {% if rev.id != own_rev.id %}
     <div class="one-review border border-dark text-center rounded p-2 my-4">
         <div class="row">
-                                        <div class="col">
-                                            <h3>{{rev.user.full_name}}</h3>
-                                        </div>
+            <div class="col">
+                <h3>{{rev.user.full_name}}</h3>
+            </div>
 
-                                    </div>
+        </div>
 
         <div class="row pt-2">
-                                        <div class="col-md-12">
-                                            <h4>{% for  i in range(0, rev.score)%} &#9733; {% endfor %} {% for  i in range(0, 5-rev.score)%} &#9734; {% endfor %}</h4>
-                                            <p>{{ rev.html | safe }}</p>
-                                        </div>
-                                    </div>
+            <div class="col-md-12">
+                <h4>{% for  i in range(0, rev.score)%} &#9733; {% endfor %} {% for  i in range(0, 5-rev.score)%} &#9734; {% endfor %}</h4>
+                <p>{{ rev.html | safe }}</p>
+            </div>
+        </div>
 
        </div>
     {% endif %}
@@ -93,4 +96,38 @@
 </div>
 
 
+
+
+<div class="modal fade" id="to-collection" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Добавить в подборку</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{{ url_for('movies.to_collection') }}" method="POST" class="form-group">
+            <input type="submit" name="submit" id="submit" hidden>
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Выберите подборку</label>
+                <select class="form-control" id="exampleFormControlSelect1" name="collection_id">
+                  {% for coll in usr_collection%}
+
+                  <option value="{{coll.id}}">{{coll.name}}</option>
+                  {% endfor %}
+                </select>
+                <input name="movie_id" value="{{movie.id}}" hidden>   
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+            <label for="submit" class="btn btn-dark mb-1">Добавить</label>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

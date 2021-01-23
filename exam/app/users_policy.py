@@ -1,5 +1,6 @@
 from flask_login import current_user
 
+
 ADMIN_ROLE_ID = 1
 MODER_ROLE_ID = 2
 USER_ROLE_ID = 3
@@ -16,14 +17,10 @@ class UsersPolicy:
         self.record = record
 
     def edit(self):
-        is_editing_user = current_user.id == self.record.id
-        return is_admin() or is_moder() or is_editing_user
+        return is_admin() or is_moder()
     def show(self):
-        is_showing_user = current_user.id == self.record.id
-        return is_admin() or is_moder() or is_showing_user
-    
+        return is_admin() or is_moder() or is_user()   
     def new(self):
         return is_admin()
-
     def delete(self):
         return is_admin()

@@ -24,13 +24,12 @@ from models import Movie, Poster
 
 from movies import bp as movies_bp
 from auth import bp as auth_bp, init_login_manager
-# from api import bp as api_bp
 
 init_login_manager(app)
 
 app.register_blueprint(movies_bp)
 app.register_blueprint(auth_bp)
-# app.register_blueprint(api_bp)
+
 
 @app.route('/')
 def index():

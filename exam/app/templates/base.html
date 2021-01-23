@@ -30,15 +30,25 @@
                     </a>
                 </div>
                 {% if current_user.is_authenticated %}
+                    
                     <div class="dropdown">
-                        <div class="profile" title="{{ current_user.full_name }}" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="img-fluid rounded-circle cursor-pointer"
-                                src="{{ url_for('static', filename='images/default-profile-picture.png') }}" alt="profile-pic">
-                        </div>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Мои подборки</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Выйти</a>
+                        <div class="row">
+                            <div class="col-md-3 mt-2">
+                                <h6 style="color:#c2c2c2">{{current_user.full_name}} </h6>
+                            </div>
+                            <div class="col-md-6">   
+                                <div class="profile" title="{{ current_user.full_name }}" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img class="img-fluid rounded-circle cursor-pointer"
+                                        src="{{ url_for('static', filename='images/default-profile-picture.png') }}" alt="profile-pic">
+                                </div>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    {% if current_user.is_user() %}
+                                    <a class="dropdown-item" href="{{ url_for('movies.collections', user_id = current_user.id) }}">Мои подборки</a>
+                                    {% endif %}
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Выйти</a>
+                                </div>
+                            </div>     
                         </div>
                     </div>
                 {% else %}

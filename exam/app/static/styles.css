@@ -14,7 +14,20 @@
     margin-top: 80px !important; 
     opacity: 80%;
 }
+.page-item{
 
+    color:#090a0a !important;
+}
+.page-link{
+
+    color:#090a0a !important;
+}
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff !important;
+    background-color: #090a0a;
+    border-color: #090a0a;
+}
 .main {
     margin-top: 80px !important; 
 }
