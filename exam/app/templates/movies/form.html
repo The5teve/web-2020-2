@@ -16,7 +16,7 @@
                     <input class="form-control" type="text" name="production_year" id="production_year" value="{{ movie.production_year or ''}}">
                 </div>
                 <div class="form-group">
-                    <label for="genre_id">Категория</label>
+                    <label for="genre_id">Жанры</label>
                     <select class="form-control selectpicker" data-live-search="true"  name="genre_id" id="genre_id" multiple>
                         {% for genre in genres %}
                             <option value="{{ genre.id }}" {% for mg in movie_genres %} {% if genre.id == mg.genre_id %} selected {% endif %} {% endfor %}>{{ genre.name }}</option>

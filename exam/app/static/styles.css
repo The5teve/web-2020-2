@@ -44,7 +44,8 @@
     margin: auto;
     background-size: cover;
     background-position: center;
-    background-color: black;
+    background-color:rgba(0,0,0,.9);
+    
 }
 
 .course .title {
@@ -195,7 +196,7 @@
         width: 100%;
     }
 }
-.bg-black  {
+.bg-dark {
 
     background-color: #090a0a!important;
 }

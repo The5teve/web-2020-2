@@ -36,8 +36,7 @@
                                 src="{{ url_for('static', filename='images/default-profile-picture.png') }}" alt="profile-pic">
                         </div>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Профиль</a>
-                            <a class="dropdown-item" href="#">Мои курсы</a>
+                            <a class="dropdown-item" href="#">Мои подборки</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Выйти</a>
                         </div>
@@ -90,7 +89,7 @@
     <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
 
     <script defer src="{{ url_for('static', filename='main.js') }}"></script>
-
+    <script src="{{ url_for('static', filename='modal.js') }}"></script>
 </body>
 
 </html>

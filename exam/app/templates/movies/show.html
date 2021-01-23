@@ -5,32 +5,92 @@
     <div class="m-auto">
         <h1 class="title mb-3 font-weight-bold">{{ movie.name }}</h1>
         <p class="mb-3 mx-auto">
-            Жанры |  <span>{{ movie.production_year }}</span>
+            {% for mg in movie.movie_genres%} {{ mg.genre.name }} {% if loop.index < movie.movie_genres|length %},{% endif %} {% endfor %} |  <span>{{ movie.production_year }}</span>
         </p>
         <div class="container">
             <p class="description w-75 mb-5 mx-auto">
                 {{ movie.director }}
             </p>
         </div>
-        {% if current_user.is_authenticated %}
-            <a href="{{url_for('movies.review', movie_id=movie.id)}}" class="btn btn-primary btn-lg">Оставить рецензию</a>
-        {% else %}
-            <button class="btn btn-primary btn-lg" disabled>Оставить рецензию</button>
-        {% endif %}
+
     </div>
 </div>
 
 <div class="container mt-5">
-    <section class="about mb-5">
+    <section class="about mb-4">
         <h2 class="mb-3 text-center text-uppercase font-weight-bold">О фильме</h2>
         <p>{{ movie.html | safe }}</p>
     </section>
+    <div class="container text-center">
+        <section class="about mb-3"> 
+            <h4>Страна </h4>
+            <p> {{ movie.country }} </p>
+        </section>
+
+        <section class="about mb-3"> 
+            <h4>Актеры </h4>
+            <p> {{ movie.actors }} </p>
+        </section>
+        <section class="about mb-3"> 
+            <h4>Продолжительность  </h4>
+            <p> {{ movie.duration }} мин. </p>
+        </section>
+        <section class="about mb-3"> 
+            <h4>Сценарист </h4>
+            <p> {{ movie.screenwriter }} </p>
+        </section>
+    </div>
 
 
 </div>
+<div class="container text-center">
+{% if current_user.is_authenticated %}
+    {% if own_rev %}
+    <div class="one-review border border-info text-center rounded p-2 my-4">
+        <div class="row">
+                                        <div class="col">
+                                            <h3>{{own_rev.user.full_name}}</h3>
+                                        </div>
 
+                                    </div>
 
+        <div class="row pt-2">
+                                        <div class="col-md-12">
+                                            <h4>{% for  i in range(0, own_rev.score)%} &#9733; {% endfor %} {% for  i in range(0, 5-own_rev.score)%} &#9734; {% endfor %}</h4>
+                                            <p>{{ own_rev.html | safe }}</p>
+                                        </div>
+                                    </div>
 
+       </div>
+    {% else %}
+        <a href="{{url_for('movies.review', movie_id=movie.id)}}" class="btn btn-dark btn-lg mb-4">Оставить рецензию</a>
+    {% endif %}
+{% else %}
+<button class="btn btn-dark btn-lg mb-4" disabled>Оставить рецензию</button>
+{% endif %}
+</div>
+<div class="container">
+    {% for rev in reviews %}
+    {% if rev.id != own_rev.id %}
+    <div class="one-review border border-dark text-center rounded p-2 my-4">
+        <div class="row">
+                                        <div class="col">
+                                            <h3>{{rev.user.full_name}}</h3>
+                                        </div>
+
+                                    </div>
+
+        <div class="row pt-2">
+                                        <div class="col-md-12">
+                                            <h4>{% for  i in range(0, rev.score)%} &#9733; {% endfor %} {% for  i in range(0, 5-rev.score)%} &#9734; {% endfor %}</h4>
+                                            <p>{{ rev.html | safe }}</p>
+                                        </div>
+                                    </div>
+
+       </div>
+    {% endif %}
+    {% endfor %}
+</div>
 
 
 {% endblock %}

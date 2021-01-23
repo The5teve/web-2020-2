@@ -11,22 +11,23 @@
         <div class="row no-gutters">
             {% for movie in movies %}
                 <div class="col-lg-4 col-md-6">
-                    <div class="row">
+                    <div class="row ">
                     <div class="course text-center" style="background-image: url({{ url_for('image', poster_id=movie.poster_id) }});">
                         <a class="title" href="">
                             {{ movie.name }}
                         </a>
-                        <p>{{ movie.movie_genres.id }}</p>
+                        
                         <div class="rating">
-                            <span></span> <span>{{ movie.production_year }}</span>
-                        </div>                                
+                            <span> {% for mg in movie.movie_genres%} {{ mg.genre.name }} {% if loop.index < movie.movie_genres|length %},{% endif %} {% endfor %}</span> | <span>{{ movie.production_year }}</span>
+                        </div>  
+                        <p>{% if movie.review | length > 0 %} Ревью написано: {{ movie.review | length }}  {% else %} Пока нет ревью {% endif %}</p>                              
                     </div>
                     </div>
                     <div class="row  p-1">
                         <div class="container text-center">
                     <a class="btn btn-sm btn-outline-dark mx-1" href="{{ url_for('movies.show', movie_id=movie.id) }}">Просмотр</a>
                     <a class="btn btn-sm btn-outline-primary mx-1" href="{{ url_for('movies.edit', movie_id=movie.id) }}">Редактировать</a>
-                    <a class="btn btn-sm btn-outline-danger  mx-1" href="{{ url_for('movies.delete', movie_id=movie.id) }}">Удалить</a>
+                    <a class="btn btn-sm btn-outline-danger  mx-1" data-toggle="modal" data-target="#delete-movie-modal" data-movie="{{movie.name}}" data-url="{{ url_for('movies.delete', movie_id=movie.id) }}">Удалить</a>
                         </div>
                     </div>
                 </div>
@@ -38,4 +39,26 @@
     </div>
 </div>
 {{ render_pagination(pagination, request.endpoint) }}
+<div class="modal" tabindex="-1" role="dialog" id="delete-movie-modal">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Удаление фильма</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Вы уверены, что хотите удалить фильм <span id="movie-name"></span> ?</p>
+          <form action="" method="POST" class="d-none">
+              <input type="submit" name="delete-btn" id="delete-btn">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <label for="delete-btn" class="btn btn-danger mb-1">Да</label>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

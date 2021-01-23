@@ -1,9 +1,11 @@
-$('#addSubThemeModal').on('show.bs.modal', function (event) {
+
+$('#delete-movie-modal').on('show.bs.modal', function (event) {
+    let url = event.relatedTarget.dataset.url;
     let form = this.querySelector('form');
-    let themeName = event.relatedTarget.closest('.card-header').querySelector('h5').textContent;
-    form['parent_id'].value = event.relatedTarget.dataset.parentId;
-    document.getElementById('parentThemeName').textContent = themeName;
-});
+    form.action = url;
+    let movieName = event.relatedTarget.dataset.movie;
+    this.querySelector('#movie-name').textContent = movieName;
+})
 
 function imagePreviewHandler(event) {
     if (event.target.files && event.target.files[0]) {
@@ -51,10 +53,6 @@ function imageUploadFunction(file, onSuccess, onError) {
     formData.append("image", file);
     xhr.send(formData);
 }
-
-
-$.fn.selectpicker.Constructor.DEFAULTS.noneResultsText = 'Нет результатов по запросу {0}';
-$.fn.selectpicker.Constructor.DEFAULTS.noneSelectedText = 'Не выбрано';
 
 const TOOLBAR_ITEMS = [
     "bold", "italic", "heading", "|", 

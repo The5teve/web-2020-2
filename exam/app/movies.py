@@ -2,9 +2,10 @@ import os
 import bleach
 from flask import Blueprint, render_template, redirect, url_for, request, current_app, flash
 from flask_login import login_required, current_user
-from tools import Navigator, ImageSaver
+from tools import  ImageSaver
 from models import Movie, Genre, Movie_Genre, Review
 from app import db
+from config import UPLOAD_FOLDER
 import markdown
 bp = Blueprint('movies', __name__, url_prefix='/movies')
 
@@ -89,10 +90,16 @@ def create():
 @login_required
 def show(movie_id):
     movie = Movie.query.get(movie_id)
-
+    reviews = Review.query.filter(Review.movie_id == movie_id )
+    own_rev = False
+    for rev in reviews:
+        if rev.user_id == current_user.id:
+            own_rev = rev
     return render_template(
         'movies/show.html', 
-        movie = movie
+        movie=movie,
+        reviews=reviews,
+        own_rev=own_rev
     )
 
 
@@ -102,16 +109,22 @@ def edit(movie_id):
     genres = Genre.query.all()
     movie_genres = Movie_Genre.query.filter(Movie_Genre.movie_id == movie_id)
     movie = Movie.query.get(movie_id)
+
     return render_template(
         'movies/edit.html', 
         genres=genres, 
         movie = movie,
-        movie_genres=movie_genres
+        movie_genres=movie_genres,
     )
 
-@bp.route('/delete')
+@bp.route('/<int:movie_id>/delete', methods=['POST'])
 @login_required
-def delete():
+def delete(movie_id):
+    movie = Movie.query.get(movie_id)
+    db.session.delete(movie)
+    db.session.commit()
+    os.remove(UPLOAD_FOLDER + '/' + str(movie.poster.storage_filename))
+    flash('Фильм удален', 'info')
     return redirect(url_for('index'))
 
 @bp.route('/<int:movie_id>/update', methods=['POST'])
@@ -129,7 +142,15 @@ def update(movie_id):
     movie.description = description
     db.session.add(movie)
     db.session.commit()
-
+    old_movie_genre = Movie_Genre.query.filter(Movie_Genre.movie_id == movie_id)
+    for mg in old_movie_genre:
+        db.session.delete(mg)
+        db.session.commit()
+    movie_genre = request.form.getlist('genre_id')
+    for genr in movie_genre:
+        movie_genres = Movie_Genre(movie_id=movie.id, genre_id=genr)
+        db.session.add(movie_genres)
+        db.session.commit()
     flash("Фильм успешно отредактирован", "success")
     return redirect(url_for('index'))
 
