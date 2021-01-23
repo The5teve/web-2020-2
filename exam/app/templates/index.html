@@ -25,10 +25,10 @@
                     </div>
                     <div class="row  p-1">
                         <div class="container text-center">
-                            {% if current_user.is_authenticated  %}
-                            {% if current_user.can('show') %}
+
+
                             <a class="btn btn-sm btn-outline-dark mx-1" href="{{ url_for('movies.show', movie_id=movie.id) }}">Просмотр</a>
-                            {% endif %}
+                            {% if current_user.is_authenticated  %}
                             {% if current_user.can('edit') %}
                             <a class="btn btn-sm btn-outline-primary mx-1" href="{{ url_for('movies.edit', movie_id=movie.id) }}">Редактировать</a>
                             {% endif %}

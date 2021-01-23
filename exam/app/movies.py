@@ -77,16 +77,16 @@ def create():
 
 
 @bp.route('/<int:movie_id>/show')
-@check_rights('show')
-@login_required
 def show(movie_id):
     movie = Movie.query.get(movie_id)
     reviews = Review.query.filter(Review.movie_id == movie_id )
     own_rev = False
-    usr_collection = Collection.query.filter(Collection.user_id == current_user.id)
-    for rev in reviews:
-        if rev.user_id == current_user.id:
-            own_rev = rev
+    usr_collection=False
+    if current_user.is_authenticated:
+        usr_collection = Collection.query.filter(Collection.user_id == current_user.id)
+        for rev in reviews:
+            if rev.user_id == current_user.id:
+                own_rev = rev
     return render_template(
         'movies/show.html', 
         movie=movie,

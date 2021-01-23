@@ -11,8 +11,10 @@
             <p class="description w-75 mb-5 mx-auto">
                 {{ movie.director }}
             </p>
+            {% if current_user.is_authenticated  %}
             {% if current_user.is_user() %}
             <a data-toggle="modal" data-target="#to-collection" class="btn btn-dark btn-md" > Добавить в подборку</a>
+            {% endif %}
             {% endif %}
         </div>
 
@@ -68,8 +70,6 @@
     {% else %}
         <a href="{{url_for('movies.review', movie_id=movie.id)}}" class="btn btn-dark btn-lg mb-4">Написать рецензию</a>
     {% endif %}
-{% else %}
-<button class="btn btn-dark btn-lg mb-4" disabled>Написать рецензию</button>
 {% endif %}
 </div>
 <div class="container">
@@ -96,7 +96,7 @@
 </div>
 
 
-
+{% if current_user.is_authenticated %}
 
 <div class="modal fade" id="to-collection" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -130,4 +130,5 @@
       </div>
     </div>
   </div>
+  {% endif %}
 {% endblock %}
