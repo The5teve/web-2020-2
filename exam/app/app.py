@@ -3,7 +3,7 @@ from flask import Flask, render_template, abort, send_from_directory, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from flask_migrate import Migrate
-
+from config import UPLOAD_FOLDER
 app = Flask(__name__)
 application = app
 PER_PAGE=6

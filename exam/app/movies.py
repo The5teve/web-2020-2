@@ -55,8 +55,8 @@ def create():
         img = img_saver.save()
 
     description = bleach.clean(request.form.get('description'))    
-    movie = Movie(**params(), poster_id=img.id, description=description)
-    try:
+    try: 
+        movie = Movie(**params(), poster_id=img.id, description=description)
         db.session.add(movie)
         db.session.commit()
     except:
@@ -103,7 +103,6 @@ def edit(movie_id):
     genres = Genre.query.all()
     movie_genres = Movie_Genre.query.filter(Movie_Genre.movie_id == movie_id)
     movie = Movie.query.get(movie_id)
-
     return render_template(
         'movies/edit.html', 
         genres=genres, 
@@ -126,29 +125,45 @@ def delete(movie_id):
 @check_rights('edit')
 @login_required
 def update(movie_id):
-    description = bleach.clean(request.form.get('description'))   
-    movie = Movie.query.get(movie_id)
-    movie.name = request.form.get('name')
-    movie.production_year = request.form.get('production_year')
-    movie.country = request.form.get('country')
-    movie.director = request.form.get('director')
-    movie.screenwriter = request.form.get('screenwriter')
-    movie.duration = request.form.get('duration')
-    movie.actors = request.form.get('actors')
-    movie.description = description
     try:
+        description = bleach.clean(request.form.get('description'))   
+        movie = Movie.query.get(movie_id)
+        movie1=movie
+        movie.name = request.form.get('name') if len(request.form.get('name'))>0 else 1/0 
+        movie.production_year = request.form.get('production_year') 
+        movie.country = request.form.get('country') if len(request.form.get('country'))>0 else 1/0 
+        movie.director = request.form.get('director') if len(request.form.get('director'))>0 else 1/0 
+        movie.screenwriter = request.form.get('screenwriter') if len(request.form.get('screenwriter'))>0 else 1/0 
+        movie.duration = request.form.get('duration') 
+        movie.actors = request.form.get('actors') if len(request.form.get('actors'))>0 else 1/0 
+        movie.description = description if len(description)>0 else 1/0 
+
         db.session.add(movie)
         db.session.commit()
     except:
+        # movie = {
+        #     'id' : movie_id,
+        #     'name' : request.form.get('name') or movie1.name,
+        #     'production_year' : request.form.get('production_year') or movie1.production_year,
+        #     'country' : request.form.get('country') or movie1.country ,
+        #     'director' : request.form.get('director') or movie1.director ,
+        #     'screenwriter' : request.form.get('screenwriter') or movie1.screenwriter ,
+        #     'duration' : request.form.get('duration') or movie1.duration ,
+        #     'actors' : request.form.get('actors') or movie1.actors ,
+        #     'description' : description or movie1.description
+        # }
         flash("Произошла ошибка, попробуйте снова", "danger")
         return redirect(url_for('movies.edit', movie_id=movie_id))
-
-
+        
+    movie_genre = request.form.getlist('genre_id')
+    if len(movie_genre)<=0:
+        flash("Пожалуйста, укажите жанры фильма", "danger")
+        return redirect(url_for('movies.edit', movie_id=movie_id))
     old_movie_genre = Movie_Genre.query.filter(Movie_Genre.movie_id == movie_id)
     for mg in old_movie_genre:
         db.session.delete(mg)
         db.session.commit()
-    movie_genre = request.form.getlist('genre_id')
+
     for genr in movie_genre:
         movie_genres = Movie_Genre(movie_id=movie.id, genre_id=genr)
         db.session.add(movie_genres)
