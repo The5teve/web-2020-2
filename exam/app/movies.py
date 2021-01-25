@@ -41,7 +41,7 @@ def new():
 
     return render_template(
         'movies/new.html', 
-        genres=genres, 
+        genres=genres
     )
 
 @bp.route('/create', methods=['POST'])
@@ -54,7 +54,8 @@ def create():
         img_saver = ImageSaver(f)
         img = img_saver.save()
 
-    description = bleach.clean(request.form.get('description'))    
+    description = bleach.clean(request.form.get('description')) 
+     
     try: 
         movie = Movie(**params(), poster_id=img.id, description=description)
         db.session.add(movie)
@@ -73,7 +74,7 @@ def create():
 
     flash(f'Фильм {movie.name} был успешно добавлен!', 'success')
 
-    return redirect(url_for('index'))
+    return redirect(url_for('movies.show', movie_id=movie.id))
 
 
 @bp.route('/<int:movie_id>/show')
@@ -128,7 +129,6 @@ def update(movie_id):
     try:
         description = bleach.clean(request.form.get('description'))   
         movie = Movie.query.get(movie_id)
-        movie1=movie
         movie.name = request.form.get('name') if len(request.form.get('name'))>0 else 1/0 
         movie.production_year = request.form.get('production_year') 
         movie.country = request.form.get('country') if len(request.form.get('country'))>0 else 1/0 
@@ -137,24 +137,11 @@ def update(movie_id):
         movie.duration = request.form.get('duration') 
         movie.actors = request.form.get('actors') if len(request.form.get('actors'))>0 else 1/0 
         movie.description = description if len(description)>0 else 1/0 
-
         db.session.add(movie)
         db.session.commit()
     except:
-        # movie = {
-        #     'id' : movie_id,
-        #     'name' : request.form.get('name') or movie1.name,
-        #     'production_year' : request.form.get('production_year') or movie1.production_year,
-        #     'country' : request.form.get('country') or movie1.country ,
-        #     'director' : request.form.get('director') or movie1.director ,
-        #     'screenwriter' : request.form.get('screenwriter') or movie1.screenwriter ,
-        #     'duration' : request.form.get('duration') or movie1.duration ,
-        #     'actors' : request.form.get('actors') or movie1.actors ,
-        #     'description' : description or movie1.description
-        # }
         flash("Произошла ошибка, попробуйте снова", "danger")
-        return redirect(url_for('movies.edit', movie_id=movie_id))
-        
+        return redirect(url_for('movies.edit', movie_id=movie_id)) 
     movie_genre = request.form.getlist('genre_id')
     if len(movie_genre)<=0:
         flash("Пожалуйста, укажите жанры фильма", "danger")
@@ -169,7 +156,7 @@ def update(movie_id):
         db.session.add(movie_genres)
         db.session.commit()
     flash("Фильм успешно отредактирован", "success")
-    return redirect(url_for('index'))
+    return redirect(url_for('movies.show', movie_id=movie.id))
 
 
 @bp.route('/<int:movie_id>/review')

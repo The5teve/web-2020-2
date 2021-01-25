@@ -100,7 +100,6 @@ class Movie(db.Model):
         return markdown.markdown(self.description)
 
 
-
 class Review(db.Model):
     __tablename__ = 'reviews'
     id = db.Column(db.Integer, primary_key=True)
