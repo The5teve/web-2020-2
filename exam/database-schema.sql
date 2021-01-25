@@ -115,7 +115,7 @@ CREATE TABLE `movies` (
   PRIMARY KEY (`id`),
   KEY `fk_movies_poster_id_posters` (`poster_id`),
   CONSTRAINT `fk_movies_poster_id_posters` FOREIGN KEY (`poster_id`) REFERENCES `posters` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -154,7 +154,7 @@ CREATE TABLE `reviews` (
   KEY `fk_reviews_user_id_users5` (`user_id`),
   CONSTRAINT `fk_reviews_movie_id_movies` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`),
   CONSTRAINT `fk_reviews_user_id_users5` FOREIGN KEY (`user_id`) REFERENCES `users5` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -259,4 +259,4 @@ CREATE TABLE `visit_logs` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-24  1:31:07
+-- Dump completed on 2021-01-26  0:01:40
