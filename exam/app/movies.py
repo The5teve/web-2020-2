@@ -17,7 +17,7 @@ PER_PAGE = 3
 
 
 def params():
-    return { p: request.form.get(p) for p in PERMITTED_PARAMS }
+    return { p: request.form.get(p) if len(request.form.get(p)) > 0 else 1/0 for p in PERMITTED_PARAMS }
 
 def params1():
     return { p: request.form.get(p) for p in PERMITTED_PARAMS1 }
@@ -54,9 +54,10 @@ def create():
         img_saver = ImageSaver(f)
         img = img_saver.save()
 
-    description = bleach.clean(request.form.get('description')) 
+
      
     try: 
+        description = bleach.clean(request.form.get('description')) if len(bleach.clean(request.form.get('description'))) else 1/0
         movie = Movie(**params(), poster_id=img.id, description=description)
         db.session.add(movie)
         db.session.commit()
@@ -64,7 +65,9 @@ def create():
         flash('Произошла ошибка, попробуйте снова', 'danger')
         return redirect(url_for('movies.new'))
     movie_genre = request.form.getlist('genre_id')
-
+    if len(movie_genre)<=0:
+        flash('Произошла ошибка, попробуйте снова', 'danger')
+        return redirect(url_for('movies.new'))
     for genr in movie_genre:
         movie_genres = Movie_Genre(movie_id=movie.id, genre_id=genr)
         db.session.add(movie_genres)
@@ -116,9 +119,16 @@ def edit(movie_id):
 @login_required
 def delete(movie_id):
     movie = Movie.query.get(movie_id)
-    db.session.delete(movie)
+    poster_check = Movie.query.filter(Movie.poster_id==movie.poster_id).all()
+
+    if len(poster_check) > 1:
+        movie.poster_id = None
+        db.session.add(movie)
+        db.session.commit()
+    movie1 = Movie.query.get(movie_id)
+    db.session.delete(movie1)
     db.session.commit()
-    os.remove(UPLOAD_FOLDER + '/' + str(movie.poster.storage_filename))
+    #os.remove(UPLOAD_FOLDER + '/' + str(movie.poster.storage_filename))
     flash('Фильм удален', 'info')
     return redirect(url_for('index'))
 
@@ -169,6 +179,10 @@ def review(movie_id):
 def draw_review(movie_id):
     text = bleach.clean(request.form.get('text')) 
     review = Review(**params1(),text=text) 
+    review_check = Review.query.filter(Review.movie_id==movie_id).filter(Review.user_id==review.user_id).all()
+    if len(review_check)>=1:
+        flash("Вы уже оставили рецензию на этот фильм", "danger")
+        return redirect(url_for('movies.review', movie_id=movie_id))   
     db.session.add(review)
     db.session.commit() 
     flash("Рецензия успешно оставлена", "success")       
